@@ -1,0 +1,25 @@
+<h1 class="text-center">{{temporizador}}</h1>
+<h1 class="text-center">¿QUIEN ES ESE POKEMON?</h1>
+<div style="display:flex;justify-content:center;">
+  <div>
+    <div class="mascara cantenedor">
+    <div *ngIf="!aparecer" class="mascara principal" width="400px" height="400px" style='background: url({{lista[0].imagen}});
+    -webkit-mask: url({{lista[0].imagen}}});
+    mask: url({{lista[0].imagen}});
+    background: black;'></div>
+    <img width="400px" height="400px" *ngIf="aparecer" src="{{lista[0].imagen}}">
+  </div>
+    <div class="row">
+      <a (click) = "seleccionar(lista[this.numeros[0]-1].name)" class="btn btn-primary btn-block col m-2">{{lista[this.numeros[0]-1].name}}</a>
+      <a (click) = "seleccionar(lista[this.numeros[1]-1].name)" class="btn btn-warning btn-block col m-2">{{lista[this.numeros[1]-1].name}}</a>
+
+    </div>
+    <div class="row">
+      <a (click) = "seleccionar(lista[this.numeros[2]-1].name)" class="btn btn-danger btn-block col m-2">{{lista[this.numeros[2]-1].name}}</a>
+      <a (click) = "seleccionar(lista[this.numeros[3]-1].name)" class="btn btn-success btn-block col m-2">{{lista[this.numeros[3]-1].name}}</a>
+    </div>
+  </div>
+</div>
+
+
+

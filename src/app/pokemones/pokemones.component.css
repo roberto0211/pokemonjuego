@@ -1,0 +1,20 @@
+.mascara {
+  background-repeat: no-repeat !important;
+  -webkit-mask-repeat: no-repeat !important;
+  mask-repeat: no-repeat !important;
+  background-size: cover;
+  background-position: center center !important;
+
+  -webkit-background-size: cover;
+  -webkit-backgroung-repeat:no-repeat;
+  mask-position: center center;
+  -webkit-mask-position: center center !important;
+}
+.principal,.contenedor{
+  width:400px;
+  height:400px;
+  display: flex;
+  justify-content:center;
+  align-items:center;
+
+}

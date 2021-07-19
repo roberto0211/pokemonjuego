@@ -1,0 +1,16 @@
+<div class="container">
+
+<h1 class="text-center" *ngIf="felicidades; else elseBlock">
+  Felicidades</h1>
+<ng-template #elseBlock><h1 class="text-center">Lo sentimos, sigue intentando</h1></ng-template>
+<h1 class="text-center">{{cantidadbuenas}}/10</h1>
+<div class="d-flex justify-content-center">
+  <img class="text-center"  *ngIf="felicidades" src="../assets/feliz.png">
+  <img class="text-center"  *ngIf="!felicidades" src="../assets/pikachu.png">
+</div>
+<div class="d-flex justify-content-center">
+  <br/>
+  <a routerLink="" class="btn btn-primary">Volver a Jugar</a>
+
+</div>
+</div>
