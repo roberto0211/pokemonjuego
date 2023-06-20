@@ -1,25 +1,45 @@
-<h1 class="text-center">{{temporizador}}</h1>
+<h1 class="text-center">{{timer}}</h1>
 <h1 class="text-center">¿QUIEN ES ESE POKEMON?</h1>
 <div style="display:flex;justify-content:center;">
   <div>
     <div class="mascara cantenedor">
-    <div *ngIf="!aparecer" class="mascara principal" width="400px" height="400px" style='background: url({{lista[0].imagen}});
-    -webkit-mask: url({{lista[0].imagen}}});
-    mask: url({{lista[0].imagen}});
-    background: black;'></div>
-    <img width="400px" height="400px" *ngIf="aparecer" src="{{lista[0].imagen}}">
-  </div>
-    <div class="row">
-      <a (click) = "seleccionar(lista[this.numeros[0]-1].name)" class="btn btn-primary btn-block col m-2">{{lista[this.numeros[0]-1].name}}</a>
-      <a (click) = "seleccionar(lista[this.numeros[1]-1].name)" class="btn btn-warning btn-block col m-2">{{lista[this.numeros[1]-1].name}}</a>
+
+      <!-- <div class="row">
+      <a (click) = "checkAnswer(questions[0].options[0])" class="btn btn-primary btn-block col m-2">{{lista[this.numeros[0]-1].name}}</a>
+      <a (click) = "checkAnswer(questions[0].options[1])" class="btn btn-warning btn-block col m-2">{{lista[this.numeros[1]-1].name}}</a>
 
     </div>
     <div class="row">
-      <a (click) = "seleccionar(lista[this.numeros[2]-1].name)" class="btn btn-danger btn-block col m-2">{{lista[this.numeros[2]-1].name}}</a>
-      <a (click) = "seleccionar(lista[this.numeros[3]-1].name)" class="btn btn-success btn-block col m-2">{{lista[this.numeros[3]-1].name}}</a>
+      <a (click) = "checkAnswer(questions[0].options[2])" class="btn btn-danger btn-block col m-2">{{lista[this.numeros[2]-1].name}}</a>
+      <a (click) = "checkAnswer(questions[0].options[3])" class="btn btn-success btn-block col m-2">{{lista[this.numeros[3]-1].name}}</a>
+    </div>  -->
     </div>
   </div>
-</div>
 
+  <div *ngIf="currentQuestionIndex < questions.length">
 
+    <img id="image" width="400px" height="400px" src="{{questions[currentQuestionIndex].image}}" class="imagen-negra" alt="Imagen">
+    <div class="row">
+      <button (click)="checkAnswer(questions[currentQuestionIndex].options[0])"
+        class="btn btn-primary btn-block col m-2">{{ questions[currentQuestionIndex].options[0] }}</button>
+      <button (click)="checkAnswer(questions[currentQuestionIndex].options[1])"
+        class="btn btn-warning btn-block col m-2">{{ questions[currentQuestionIndex].options[1] }}</button>
+    </div>
+    <div class="row">
+      <button (click)="checkAnswer(questions[currentQuestionIndex].options[2])"
+        class="btn btn-danger btn-block col m-2"> {{ questions[currentQuestionIndex].options[2] }}</button>
+      <button (click)="checkAnswer(questions[currentQuestionIndex].options[3])"
+        class="btn btn-success btn-block col m-2">{{ questions[currentQuestionIndex].options[3] }}</button>
+    </div>
+    <hr>
+  </div>
 
+  <!-- <div *ngFor="let question of questions">
+  <img [src]="question.image" alt="Pokemon Image">
+
+  <button (click)="checkAnswer(question.options[0])">{{ question.options[0] }}</button>
+  <button (click)="checkAnswer(question.options[1])">{{ question.options[1] }}</button>
+  <button (click)="checkAnswer(question.options[2])">{{ question.options[2] }}</button>
+  <button (click)="checkAnswer(question.options[3])">{{ question.options[3] }}</button>
+  <hr>
+</div> -->

@@ -4,116 +4,179 @@ import { HelperServiceService } from '../helper-service.service';
 import { PokemonModel } from '../model/PokemonModel';
 import { Resultado } from '../model/Resultado';
 import { ServicesService } from '../servicio/services.service';
+import { forkJoin,Observable } from 'rxjs';
+
+import { HttpClient } from '@angular/common/http';
+import { map } from 'rxjs/operators';
+interface PokemonData {
+  name: string;
+  sprites: {
+    other: {
+      dream_world:{
+        front_default:string
+      }
+    }
+  };
+
+}
+
+interface Question {
+  image: string;
+  options: string[];
+  answer: string;
+}
 
 @Component({
   selector: 'app-pokemones',
   templateUrl: './pokemones.component.html',
   styleUrls: ['./pokemones.component.css']
 })
-export class PokemonesComponent implements OnInit {
-  pokemon: PokemonModel = new PokemonModel();
-  lista:PokemonModel[] = [];
-  numeros : number[] = [1,2,3,4];
-  aparecer:Boolean= false;
-  resultados:Resultado[] = [];
-  resultado:Resultado = new Resultado();
-  index:number = 1;
-  temporizador:number  = 10;
-  timer: any = setInterval(() => {this.reloj()},1000);
-  cantidadBuenas:string = '';
+
+export class PokemonesComponent {
+  timer:number;
+  current = 0;
+
+  questions: Question[] = [];
+  currentQuestionIndex: number;
+
+  time: any;
+  numberCorrect : number = 0;
+  intervalo: any;
 
   constructor(private service:ServicesService,private router:Router,
-              private helper:HelperServiceService) {
-    this.numeros = this.elegirNumber(this.numeros);
-    this.timer;
+              private helper:HelperServiceService,
+              private http: HttpClient) {
+    this.consultarApiPokemon();
+   
+    this.timer = 10;
+    this.numberCorrect = 0;
+    this.currentQuestionIndex = 0;  
+     this.helper.modificarCantidad('');
+     this.iniciarContador();
+  }
+
+
+ 
+   consultarApiPokemon() {
+     const numerosRandom: number[] = [];
+     for (let i = 0; i < 40; i++) {
+       const numero = Math.floor(Math.random() * 600) + 1;
+       numerosRandom.push(numero);
+     }
+ 
+     const consultas = numerosRandom.map((numero) =>
+       this.http.get<PokemonData>(`https://pokeapi.co/api/v2/pokemon/${numero}`)
+     );
+ 
+     forkJoin(consultas).subscribe((pokemones: PokemonData[]) => {
+       const grupos = this.dividirLista(pokemones, 10);
+ 
+       for (const grupo of grupos) {
+         const preguntasGrupo: Question[] = [];
+ 
+         for (const pokemon of grupo) {
+           const opciones = this.obtenerOpcionesRespuesta(pokemones, pokemon.name);
+           const pregunta: Question = {
+             image: pokemon.sprites.other.dream_world.front_default,
+             options: opciones,
+             answer: pokemon.name
+           };
+ 
+           preguntasGrupo.push(pregunta);
+         }
+ 
+         const preguntaSeleccionada = this.obtenerElementoAleatorio(preguntasGrupo);
+         this.questions.push(preguntaSeleccionada);
+       }
+     });
    }
-   reloj(){
-    this.temporizador --;
-    if(this.temporizador == 0)
-      {
-          clearInterval(this.timer);
-          this.seleccionar('');//seleccinar ninguna == erroneo
-
-      }
+ 
+   dividirLista<T>(lista: T[], partes: number): T[][] {
+     const longitudParte = Math.ceil(lista.length / partes);
+     return new Array(partes).fill(null).map((_, index) =>
+       lista.slice(index * longitudParte, (index + 1) * longitudParte)
+     );
    }
-  inicializardenuevo(){
-    this.timer = setInterval(() => {this.reloj()},1000);
-  }
-  ngOnInit(): void {
-    this.getPokemones();
-  }
-  getRandom(max:number):number{
-    return Math.floor(Math.random() * max) + 1;
-  }
+ 
+   obtenerElementoAleatorio<T>(lista: T[]): T {
+     const indiceAleatorio = Math.floor(Math.random() * lista.length);
+     return lista[indiceAleatorio];
+   }
+ 
+   obtenerOpcionesRespuesta(pokemones: PokemonData[], respuestaCorrecta: string): string[] {
+     const opciones = [];
+     const nombres = pokemones.map((pokemon) => pokemon.name);
+     opciones.push(respuestaCorrecta);
+ 
+     while (opciones.length < 4) {
+       const nombreAleatorio = this.obtenerElementoAleatorio(nombres);
+       if (!opciones.includes(nombreAleatorio)) {
+         opciones.push(nombreAleatorio);
+       }
+     }
+ 
+     return this.shuffleArray(opciones);
+   }
+ 
+   shuffleArray(array: any[]): any[] {
+     for (let i = array.length - 1; i > 0; i--) {
+       const j = Math.floor(Math.random() * (i + 1));
+       [array[i], array[j]] = [array[j], array[i]];
+     }
+     return array;
+   }
 
-  elegirNumber(array:number[]){
+  checkAnswer(question: string) {
+  
+    const answer = this.questions[this.currentQuestionIndex].answer;
+    this.timer = 10
+    const image = document.getElementById('image');
+    image?.classList.remove('imagen-negra')
+    if(answer == question){
+        console.log('correcto')
+        this.numberCorrect++;
 
-      var currentIndex = array.length, temporaryValue, randomIndex;
-
-
-      while (0 !== currentIndex) {
-
-        randomIndex = Math.floor(Math.random() * currentIndex);
-        currentIndex -= 1;
-
-        temporaryValue = array[currentIndex];
-        array[currentIndex] = array[randomIndex];
-        array[randomIndex] = temporaryValue;
-      }
-
-      return array;
+    }else{
+      console.log('incorrecto')
     }
 
-  seleccionar(name:string){
-    clearInterval(this.timer);
-    this.resultado = new Resultado();
-    if(name == this.lista[0].name){
-      this.resultado.id = this.index;
-      this.resultado.resultado = "success";
-    }
-    else{
-      this.resultado.id = this.index;
-      this.resultado.resultado = "error";
-    }
-    this.resultados.push(this.resultado);
-    this.aparecer = true;
-    if(this.resultados.length < 10){
-      setTimeout(()=>{                           // <<<---using ()=> syntax
-        this.updatePokemones();
+  console.log(this.currentQuestionIndex)
+    if(this.currentQuestionIndex < 9){
+      setTimeout(()=>{        
+        this.currentQuestionIndex ++;
+        this.nextPokemon();   
       }, 1500);
     }else{
-      clearInterval(this.timer);
+      this.detenerContador();
+      this.helper.modificarCantidad(this.numberCorrect.toString());
       this.router.navigate(['resultados']);
-      this.cantidadBuenas = '' + this.resultados.filter(e => e.resultado === 'success').length;
-      this.helper.modificarCantidad(this.cantidadBuenas);
     }
   }
-  getPokemones(){
-
-    for(let i = 0; i<4;i++){
-      this.service.getPokemones(this.getRandom(600)).subscribe(
-        res => {
-          this
-          this.pokemon = new PokemonModel();
-           this.pokemon.name = res.name;
-           this.pokemon.imagen =res.sprites.other.dream_world.front_default;
-           this.lista.push(this.pokemon);
-        },
-        err =>{
-          console.log(this.lista.length);
-
-        }
-      );
-    }
+  iniciarContador() {
+    this.intervalo = setInterval(() => {
+      if (this.timer > 0) {
+        this.timer--;
+      } else {
+        this.reiniciarContador();
+      }
+    }, 1000);
   }
 
-  updatePokemones(){
-    this.lista = [];
-    this.aparecer = false;
-    this.temporizador = 10;
-    this.getPokemones();
-    clearInterval(this.timer);
-    this.inicializardenuevo();
+  detenerContador() {
+    clearInterval(this.intervalo);
+  }
+
+  reiniciarContador() {
+    this.timer = 10;
+    this.checkAnswer('');
+  }
+ 
+
+  nextPokemon():void{
+    const image = document.getElementById('image');
+    image?.classList.add('imagen-negra')
   }
 
 }
+
+

@@ -18,3 +18,7 @@
   align-items:center;
 
 }
+.imagen-negra {
+  filter: brightness(0%) invert(100%);
+  mix-blend-mode: difference;
+}
