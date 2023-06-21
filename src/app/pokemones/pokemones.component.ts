@@ -139,15 +139,16 @@ export class PokemonesComponent {
     }else{
       console.log('incorrecto')
     }
-
+    this.detenerContador();
   console.log(this.currentQuestionIndex)
     if(this.currentQuestionIndex < 9){
       setTimeout(()=>{        
         this.currentQuestionIndex ++;
         this.nextPokemon();   
+        this.iniciarContador();
       }, 1500);
     }else{
-      this.detenerContador();
+      
       this.helper.modificarCantidad(this.numberCorrect.toString());
       this.router.navigate(['resultados']);
     }
