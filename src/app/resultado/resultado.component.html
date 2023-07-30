@@ -5,12 +5,14 @@
 <ng-template #elseBlock><h1 class="text-center">Lo sentimos, sigue intentando</h1></ng-template>
 <h1 class="text-center">{{cantidadbuenas}}/10</h1>
 <div class="d-flex justify-content-center">
-  <img class="text-center"  *ngIf="felicidades" src="../assets/feliz.png" alt="imagen de felicitaciones">
-  <img class="text-center"  *ngIf="!felicidades" src="../assets/pikachu.png" alt="siguelo intentando">
+  <img class="text-center"  *ngIf="felicidades" src="assets/feliz.png" alt="imagen de felicitaciones">
+  <img class="text-center"  *ngIf="!felicidades" src="assets/pikachu.png" alt="siguelo intentando">
 </div>
-<div class="d-flex justify-content-center">
+<div class="d-flex flex-column justify-content-center align-items-center buttons" >
   <br/>
-  <a routerLink="/" class="btn btn-primary">Volver a Jugar</a>
-
+  <br/>
+  <a routerLink="/game" class="btn btn-primary m-1">Volver a Jugar</a>
+  <br/>
+  <a routerLink="/" class="btn btn-danger m-1">Salir</a>
 </div>
 </div>

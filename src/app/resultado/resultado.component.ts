@@ -15,8 +15,8 @@ export class ResultadoComponent implements OnInit {
 
   ngOnInit(): void {
     this.helper.mandarCantidad.subscribe(msg => this.cantidadbuenas = msg);
-    if(this.cantidadbuenas == '')
-      this.router.navigate(['']);
+    // if(this.cantidadbuenas == '')
+    //   this.router.navigate(['']);
     if(+this.cantidadbuenas > 6)
       this.felicidades = true;
 

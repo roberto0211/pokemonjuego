@@ -7,12 +7,14 @@ import { PokemonesComponent } from './pokemones/pokemones.component';
 import { RouterModule } from '@angular/router';
 import { ResultadoComponent } from './resultado/resultado.component';
 import {HelperServiceService} from './helper-service.service';
+import { HomeComponent } from './home/home.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     PokemonesComponent,
-    ResultadoComponent
+    ResultadoComponent,
+    HomeComponent
   ],
   imports: [
     BrowserModule,

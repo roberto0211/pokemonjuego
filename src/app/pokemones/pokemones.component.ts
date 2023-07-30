@@ -32,7 +32,7 @@ interface Question {
   styleUrls: ['./pokemones.component.css']
 })
 
-export class PokemonesComponent {
+export class PokemonesComponent implements OnInit{
   timer:number;
   current = 0;
 
@@ -52,10 +52,18 @@ export class PokemonesComponent {
     this.numberCorrect = 0;
     this.currentQuestionIndex = 0;  
      this.helper.modificarCantidad('');
-     this.iniciarContador();
+   
   }
 
-
+  ngOnInit(): void {
+    
+  }
+  ngOnDestroy(): void {
+    this.detenerContador();
+  }
+  ngAfterContentInit():void{
+    this.iniciarContador();
+  }
  
    consultarApiPokemon() {
      const numerosRandom: number[] = [];
@@ -133,11 +141,7 @@ export class PokemonesComponent {
     const image = document.getElementById('image');
     image?.classList.remove('imagen-negra')
     if(answer == question){
-        console.log('correcto')
         this.numberCorrect++;
-
-    }else{
-      console.log('incorrecto')
     }
     this.detenerContador();
   console.log(this.currentQuestionIndex)

@@ -3,3 +3,12 @@ img{
   width: 380px;
   height: 450px;
 }
+
+.buttons{
+
+  padding: 10px;
+}
+.buttons a{
+  width: 300px;
+  max-width: 100%;
+}
